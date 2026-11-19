@@ -57,6 +57,16 @@ docker compose restart
 
 - `PAPERCLIP_PUBLIC_URL=https://paperclip.colaboratech.cloud`
 - Primeiro acesso: criar conta e "Claim this instance" (vira admin).
+- `/api/` passa direto no nginx (sem Basic auth) para o CLI; a API exige token.
+  A UI continua protegida por Basic auth.
+
+CLI (na máquina local, perfil `vps` já criado):
+
+```bash
+npx paperclipai@latest context show
+npx paperclipai@latest auth login --no-browser   # após o claim no navegador
+npx paperclipai@latest token board create --name ci
+```
 
 ## OpenBot
 
