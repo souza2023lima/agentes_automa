@@ -15,7 +15,7 @@ independentes em `/opt/agentes/<app>/`. Portas publicadas **apenas em
 | --- | --- | --- | --- | --- |
 | Hermes Agent | hermes.colaboratech.cloud | 9119 (dashboard) | `/opt/agentes/hermes` | rodando |
 | Paperclip | paperclip.colaboratech.cloud | 18081 | `/opt/agentes/paperclip` | rodando (basic auth) |
-| OpenBot | (sem porta pública) | — | serviço systemd | instalado, deslogado |
+| OpenBot | (sem porta pública) | — | serviço systemd | online, conta lsjlima@gmail.com |
 
 Painéis `paperclip` e `openbot` protegidos por Basic auth no nginx
 (`/etc/nginx/.htpasswd_agentes`). Credenciais em `/opt/agentes/.painel-credentials`
