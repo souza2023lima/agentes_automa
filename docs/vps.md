@@ -14,8 +14,12 @@ independentes em `/opt/agentes/<app>/`. Portas publicadas **apenas em
 | App | Subdomínio | Porta interna | Pasta | Status |
 | --- | --- | --- | --- | --- |
 | Hermes Agent | hermes.colaboratech.cloud | 9119 (dashboard) | `/opt/agentes/hermes` | rodando |
-| Paperclip | paperclip.colaboratech.cloud | 18081 | `/opt/agentes/paperclip` | pendente |
-| OpenBot | openbot.colaboratech.cloud | 18082 | `/opt/agentes/openbot` | pendente |
+| Paperclip | paperclip.colaboratech.cloud | 18081 | `/opt/agentes/paperclip` | rodando (basic auth) |
+| OpenBot | openbot.colaboratech.cloud | 18082 | `/opt/agentes/openbot` | aguardando credenciais |
+
+Painéis `paperclip` e `openbot` protegidos por Basic auth no nginx
+(`/etc/nginx/.htpasswd_agentes`). Credenciais em `/opt/agentes/.painel-credentials`
+(modo 600).
 
 ## Hermes Agent
 
@@ -39,8 +43,42 @@ sessões, memórias, skills).
 - Webapp: porta 9120, sobe após um provedor de modelo ser configurado.
 - `dashboard.trusted_proxies` = `172.18.0.0/16` (rede do compose).
 
-## Proxy e TLS
+## Paperclip
 
+Imagem `ghcr.io/paperclipai/paperclip:latest`, porta interna 3100, Postgres
+embutido em `/opt/agentes/paperclip/data`. Segredos em `.env`
+(`BETTER_AUTH_SECRET`, `PAPERCLIP_TOOL_ACTION_SIGNING_SECRET`).
+
+```bash
+cd /opt/agentes/paperclip
+docker compose logs -f --tail 50
+docker compose restart
+```
+
+- `PAPERCLIP_PUBLIC_URL=https://paperclip.colaboratech.cloud`
+- Primeiro acesso: criar conta e "Claim this instance" (vira admin).
+
+## OpenBot
+
+Imagem `ghcr.io/copilotkit/openbot:latest` em container único, Postgres
+embutido (`EMBEDDED_POSTGRES=on`), volume `openbot-data`. Sem o supervisor,
+portanto **sem montar o socket do Docker** — os Bots compartilham um único
+computer, o que é o modo recomendado para servidor.
+
+```bash
+cd /opt/agentes/openbot
+docker compose logs -f --tail 50
+```
+
+Requer, antes de subir:
+
+- Provedor de identidade (Google/Microsoft/Okta) **ou** `OPENBOT_SINGLE_USER`
+  (este último é recusado em endereço público).
+- `INTELLIGENCE_API_URL` + `CPK_INTELLIGENCE_API_KEY` (CopilotKit Intelligence).
+- Chave de modelo (`OPENAI_API_KEY` ou `ANTHROPIC_API_KEY`).
+- `KEY_ENCRYPTION_KEY` e `BETTER_AUTH_SECRET` já gerados no `.env`.
+
+## Proxy e TLS
 `/etc/nginx/sites-available/agentes.conf` — um server block por subdomínio.
 
 DNS no Cloudflare: registros `A` apontando para `5.183.35.108`.
