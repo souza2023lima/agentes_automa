@@ -15,7 +15,7 @@ independentes em `/opt/agentes/<app>/`. Portas publicadas **apenas em
 | --- | --- | --- | --- | --- |
 | Hermes Agent | hermes.colaboratech.cloud | 9119 (dashboard) | `/opt/agentes/hermes` | rodando |
 | Paperclip | paperclip.colaboratech.cloud | 18081 | `/opt/agentes/paperclip` | rodando (basic auth) |
-| OpenBot | openbot.colaboratech.cloud | 18082 | `/opt/agentes/openbot` | aguardando credenciais |
+| OpenBot | (sem porta pública) | — | serviço systemd | instalado, deslogado |
 
 Painéis `paperclip` e `openbot` protegidos por Basic auth no nginx
 (`/etc/nginx/.htpasswd_agentes`). Credenciais em `/opt/agentes/.painel-credentials`
@@ -60,23 +60,28 @@ docker compose restart
 
 ## OpenBot
 
-Imagem `ghcr.io/copilotkit/openbot:latest` em container único, Postgres
-embutido (`EMBEDDED_POSTGRES=on`), volume `openbot-data`. Sem o supervisor,
-portanto **sem montar o socket do Docker** — os Bots compartilham um único
-computer, o que é o modo recomendado para servidor.
+Cliente **openbot.run** (Nightly Labs), não o OpenBot da CopilotKit. Instalado
+como servidor sem tela: AppImage + serviço systemd, usuário `openbot`.
 
 ```bash
-cd /opt/agentes/openbot
-docker compose logs -f --tail 50
+sudo openbot status
+sudo openbot logs
+sudo openbot restart
+sudo openbot update
 ```
 
-Requer, antes de subir:
+- Não expõe site: conecta para fora (`api.openbot.run`) e é usado pelo app do
+  PC ou por `openbot.run/app`.
+- Entrada de servidor: **Add server → Other options → New server on another
+  computer** gera um claim de uso único válido por 15 minutos:
+  `{ echo OPENBOT_CLAIM=<claim>; curl -fsSL .../install-server.sh; } | sudo bash -s`
+- O vhost `openbot.colaboratech.cloud` responde 404 de propósito; o domínio não
+  é necessário para este produto.
 
-- Provedor de identidade (Google/Microsoft/Okta) **ou** `OPENBOT_SINGLE_USER`
-  (este último é recusado em endereço público).
-- `INTELLIGENCE_API_URL` + `CPK_INTELLIGENCE_API_KEY` (CopilotKit Intelligence).
-- Chave de modelo (`OPENAI_API_KEY` ou `ANTHROPIC_API_KEY`).
-- `KEY_ENCRYPTION_KEY` e `BETTER_AUTH_SECRET` já gerados no `.env`.
+### Instalação anterior (descartada)
+
+Tentativa inicial com `ghcr.io/copilotkit/openbot` — projeto homônimo, exige
+licença/Intelligence e foi removido (container, volume e pasta).
 
 ## Proxy e TLS
 `/etc/nginx/sites-available/agentes.conf` — um server block por subdomínio.
