@@ -6,6 +6,7 @@
 | --- | --- |
 | [../README.md](../README.md) | Visão geral e estrutura |
 | [decisoes.md](decisoes.md) | Registro de decisões técnicas (ADR simplificado) |
+| [vps.md](vps.md) | VPS, isolamento, portas e deploy dos agentes |
 
 ## Convenções
 
