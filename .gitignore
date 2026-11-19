@@ -1,0 +1,44 @@
+# Ambiente
+.env
+.env.*
+!.env.example
+.venv/
+venv/
+node_modules/
+
+# Segredos e credenciais
+*.pem
+*.key
+credentials*.json
+service-account*.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node
+dist/
+.next/
+coverage/
+*.log
+
+# Dados e saídas
+data/
+output/
+tmp/
+*.sqlite
+*.db
+*.dump
+*.sql.gz
+
+# Editores e SO
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
