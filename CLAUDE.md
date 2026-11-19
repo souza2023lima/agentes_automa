@@ -20,14 +20,22 @@ Quando a stack for escolhida, atualizar esta seção e a seção **Comandos**.
 
 ## Deploy
 
-TODO: preencher host, usuário, pasta da aplicação, comando de atualização e
-health check da VPS.
+VPS Contabo `vmi3732296.contaboserver.net` — Ubuntu 26.04, 193 GB de disco,
+11 GB de RAM. Acesso por chave (`~/.ssh/id_ed25519`), alias `vps-agentes`:
 
 ```bash
-# ssh <VPS_USER>@<VPS_HOST>
+ssh vps-agentes              # itasuporte@5.183.35.108
+```
+
+Pasta da aplicação e health check: TODO (definir quando a stack existir).
+
+```bash
 # cd <VPS_APP_DIR> && git pull --ff-only && <restart>
 # curl -f <health-check-url>
 ```
+
+Observações: `docker` e `node` não instalados; `git` 2.53 e `python3` 3.14
+disponíveis; `sudo` pede senha.
 
 ## Estrutura
 
